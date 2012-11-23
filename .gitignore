@@ -4,3 +4,12 @@
 *.jar
 *.war
 *.ear
+# Intellij Idea Files # 
+*.iml
+*.ipr
+*.iws
+# svn repo files #
+.svn
+# misc #
+build
+
