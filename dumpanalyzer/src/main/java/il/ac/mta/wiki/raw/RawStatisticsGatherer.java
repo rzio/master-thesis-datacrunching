@@ -1,7 +1,5 @@
-package il.ac.mta.wiki;
+package il.ac.mta.wiki.raw;
 
-import il.ac.mta.wiki.weekly.PageWeeklyStatistic;
-import il.ac.mta.wiki.weekly.WikiWeeklyStatisticsWriter;
 import org.mediawiki.importer.DumpWriter;
 import org.mediawiki.importer.Page;
 import org.mediawiki.importer.Revision;
@@ -9,6 +7,7 @@ import org.mediawiki.importer.Siteinfo;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
@@ -18,7 +17,7 @@ import java.util.TimeZone;
  * @since 4/22/12 9:41 AM
  */
 
-public class StatisticsGatherer implements DumpWriter
+public class RawStatisticsGatherer implements DumpWriter
 {
 
     protected static final String version = "0.3";
@@ -28,12 +27,13 @@ public class StatisticsGatherer implements DumpWriter
 
     private final Charset utf8 = Charset.forName("UTF8");
 
-    WikiWeeklyStatisticsWriter statistics;
-    private PageWeeklyStatistic pageStatistic;
+    WikiRawStatisticsWriter writer;
+    String currentPageTitle;
+    int currentPageId;
 
-    public StatisticsGatherer(WikiWeeklyStatisticsWriter writer) throws IOException
+    public RawStatisticsGatherer(WikiRawStatisticsWriter writer) throws IOException
     {
-        statistics = writer;
+        this.writer = writer;
     }
 
     static
@@ -53,7 +53,7 @@ public class StatisticsGatherer implements DumpWriter
 
     public void writeEndWiki() throws IOException
     {
-        statistics.close();
+        writer.close();
     }
 
     public void writeSiteinfo(Siteinfo info) throws IOException
@@ -63,14 +63,14 @@ public class StatisticsGatherer implements DumpWriter
 
     public void writeStartPage(Page page) throws IOException
     {
-        pageStatistic = new PageWeeklyStatistic(page.Title.toString(), page.Id);
+        currentPageId = page.Id;
+        currentPageTitle =page.Title.toString();
+
     }
 
     public void writeEndPage() throws IOException
     {
-        statistics.addStatistic(pageStatistic);
-        statistics.flush();
-
+        writer.flush();
     }
 
     public void writeRevision(Revision rev) throws IOException
@@ -80,15 +80,19 @@ public class StatisticsGatherer implements DumpWriter
         {
             if (rev.Contributor.Username != null)
             {
-                pageStatistic.addRevision(rev.Contributor.Username,
+
+                writer.addStatistic(new RevisionDataPoint(currentPageTitle,
+                        currentPageId,
+                        new Timestamp(rev.Timestamp.getTimeInMillis()),
+                        rev.Contributor.Username,
                         rev.Contributor.isIP,
-                        rev.Contributor.Username.contains("bot") || rev.Contributor.Username.contains("Bot"),
-                        rev.Timestamp.getTimeInMillis());
+                        rev.Contributor.Username.contains("bot") || rev.Contributor.Username.contains("Bot")
+                        ));
             }
         }
         catch (Exception e)
         {
-            int i = 10;
+            e.printStackTrace();
         }
 
     }

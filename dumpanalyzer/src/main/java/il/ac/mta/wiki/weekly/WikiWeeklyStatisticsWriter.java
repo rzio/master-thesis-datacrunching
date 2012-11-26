@@ -1,4 +1,4 @@
-package il.ac.mta.wiki;
+package il.ac.mta.wiki.weekly;
 
 import com.google.common.collect.ImmutableList;
 
@@ -11,19 +11,19 @@ import java.util.Map;
  * @since 9/14/12 4:18 PM
  */
 
-public abstract class WikiStatisticsWriter
+public abstract class WikiWeeklyStatisticsWriter
 {
     protected Map<Integer, Double> runningAverages = new HashMap<Integer, Double>();
     protected Map<Integer, Integer> runningCount = new HashMap<Integer, Integer>();
 
     private boolean firstLine = true;
 
-    public final void addStatistic(PageStatistic pageStatistic)
+    public final void addStatistic(PageWeeklyStatistic pageStatistic)
     {
         if (firstLine)
         {
 
-            writeHeader(ImmutableList.<PageStatistic.EditUniquenessCaclulationStrategy>builder()
+            writeHeader(ImmutableList.<PageWeeklyStatistic.EditUniquenessCaclulationStrategy>builder()
                     .addAll(pageStatistic.revisionStatistics.values().iterator().next().uniqueTotals.keySet())
                     .build());
             firstLine = false;
@@ -31,11 +31,11 @@ public abstract class WikiStatisticsWriter
         writeLine(pageStatistic);
     }
 
-    protected abstract void writeHeader(List<PageStatistic.EditUniquenessCaclulationStrategy> ucss);
+    protected abstract void writeHeader(List<PageWeeklyStatistic.EditUniquenessCaclulationStrategy> ucss);
 
-    protected abstract void writeLine(PageStatistic pageStatistic);
+    protected abstract void writeLine(PageWeeklyStatistic pageStatistic);
 
-    protected void updateRunningAverage(PageStatistic pageStatistic, Map.Entry<Integer, PageStatistic.RevisionWeekStatistic> entry)
+    protected void updateRunningAverage(PageWeeklyStatistic pageStatistic, Map.Entry<Integer, PageWeeklyStatistic.RevisionWeekStatistic> entry)
     {
         if (!runningAverages.containsKey(pageStatistic.pageId))
         {

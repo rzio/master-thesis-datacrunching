@@ -1,7 +1,5 @@
-package il.ac.mta.wiki;
+package il.ac.mta.wiki.weekly;
 
-import il.ac.mta.wiki.weekly.PageWeeklyStatistic;
-import il.ac.mta.wiki.weekly.WikiWeeklyStatisticsWriter;
 import org.mediawiki.importer.DumpWriter;
 import org.mediawiki.importer.Page;
 import org.mediawiki.importer.Revision;
@@ -18,7 +16,7 @@ import java.util.TimeZone;
  * @since 4/22/12 9:41 AM
  */
 
-public class StatisticsGatherer implements DumpWriter
+public class StatisticsWeeklyGatherer implements DumpWriter
 {
 
     protected static final String version = "0.3";
@@ -31,7 +29,7 @@ public class StatisticsGatherer implements DumpWriter
     WikiWeeklyStatisticsWriter statistics;
     private PageWeeklyStatistic pageStatistic;
 
-    public StatisticsGatherer(WikiWeeklyStatisticsWriter writer) throws IOException
+    public StatisticsWeeklyGatherer(WikiWeeklyStatisticsWriter writer) throws IOException
     {
         statistics = writer;
     }
@@ -88,7 +86,7 @@ public class StatisticsGatherer implements DumpWriter
         }
         catch (Exception e)
         {
-            int i = 10;
+            System.err.println(e.toString());
         }
 
     }

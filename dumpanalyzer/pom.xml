@@ -11,6 +11,12 @@
 
     <artifactId>dumpanalyzer</artifactId>
 
+    <repositories>
+        <repository>
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/content/repositories/releases/</url>
+        </repository>
+    </repositories>
     <dependencies>
            <dependency>
                <groupId>org.wikimedia</groupId>
@@ -32,6 +38,17 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>3.1.11</version>
         </dependency>
+        <dependency>
+                   <groupId>com.mchange</groupId>
+                   <artifactId>mchange-commons-java</artifactId>
+                   <version>0.2.1-RELEASE</version>
+               </dependency>
+        <dependency>
+            <groupId>com.mchange</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.2-pre2-RELEASE</version>
+        </dependency>
+
 
         <!--<dependency>-->
                <!--<groupId>junit</groupId>-->

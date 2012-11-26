@@ -1,4 +1,4 @@
-package il.ac.mta.wiki;
+package il.ac.mta.wiki.weekly;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -11,14 +11,14 @@ import java.util.*;
  * @since 8/4/12 4:34 PM
  */
 
-public class PageStatistic
+public class PageWeeklyStatistic
 {
     public String pageTitle;
     public int pageId;
 
     public Map<Integer, RevisionWeekStatistic> revisionStatistics = new TreeMap<Integer, RevisionWeekStatistic>();
 
-    public PageStatistic(String pageTitle, int pageId)
+    public PageWeeklyStatistic(String pageTitle, int pageId)
     {
         this.pageTitle = pageTitle;
         this.pageId = pageId;

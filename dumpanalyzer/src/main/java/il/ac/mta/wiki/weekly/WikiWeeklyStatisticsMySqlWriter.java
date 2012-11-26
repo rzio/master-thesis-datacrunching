@@ -1,4 +1,4 @@
-package il.ac.mta.wiki;
+package il.ac.mta.wiki.weekly;
 
 import java.sql.*;
 import java.util.List;
@@ -9,13 +9,13 @@ import java.util.Map;
  * @since 9/14/12 4:23 PM
  */
 
-public class WikiStatisticsMySqlWriter extends WikiStatisticsWriter
+public class WikiWeeklyStatisticsMySqlWriter extends WikiWeeklyStatisticsWriter
 {
 
     private Connection connection;
     StringBuilder insert = new StringBuilder();
 
-    public WikiStatisticsMySqlWriter(String url, String dbName, String userName, String password)
+    public WikiWeeklyStatisticsMySqlWriter(String url, String dbName, String userName, String password)
     {
         System.out.println("Connecting to MySql.");
         connection = null;
@@ -32,22 +32,22 @@ public class WikiStatisticsMySqlWriter extends WikiStatisticsWriter
     }
 
     @Override
-    public void writeHeader(List<PageStatistic.EditUniquenessCaclulationStrategy> ucss)
+    public void writeHeader(List<PageWeeklyStatistic.EditUniquenessCaclulationStrategy> ucss)
     {
         try
         {
             Statement s = connection.createStatement();
-            s.executeUpdate("DROP TABLE IF EXISTS `pages_statistics`");
+            s.executeUpdate("DROP TABLE IF EXISTS `pages_weekly_statistics`");
 //            connection.commit();
 
             StringBuilder table = new StringBuilder();
-            table.append("CREATE TABLE `pages_statistics` (\n");
+            table.append("CREATE TABLE `pages_weekly_statistics` (\n");
             table.append("  `page_id` int(11) NOT NULL,\n");
             table.append("  `week` int(11) NOT NULL,\n");
             table.append("  `page_title` varchar(512) COLLATE utf8_bin NOT NULL,\n");
             table.append("  `total_edits` int(11) NOT NULL,\n");
             table.append("  `running_avg` double NOT NULL");
-            for (PageStatistic.EditUniquenessCaclulationStrategy strategy : ucss)
+            for (PageWeeklyStatistic.EditUniquenessCaclulationStrategy strategy : ucss)
             {
                 table.append(",\n").append("  `").append(strategy.toString()).append("` int(11) NOT NULL");
             }
@@ -62,14 +62,14 @@ public class WikiStatisticsMySqlWriter extends WikiStatisticsWriter
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        insert.append("insert into `wiki`.`pages_statistics`\n");
+        insert.append("insert into `wiki`.`pages_weekly_statistics`\n");
         insert.append("            (`page_id`,\n");
         insert.append("             `week`,\n");
         insert.append("             `page_title`,\n");
         insert.append("             `total_edits`,\n");
         insert.append("             `running_avg`");
         StringBuilder values = new StringBuilder().append("VALUES (?,?,?,?,?");
-        for (PageStatistic.EditUniquenessCaclulationStrategy strategy : ucss)
+        for (PageWeeklyStatistic.EditUniquenessCaclulationStrategy strategy : ucss)
         {
             insert.append(",\n").append("  `").append(strategy.toString()).append("`");
             values.append(",?");
@@ -79,11 +79,11 @@ public class WikiStatisticsMySqlWriter extends WikiStatisticsWriter
     }
 
     @Override
-    public void writeLine(PageStatistic pageStatistic)
+    public void writeLine(PageWeeklyStatistic pageStatistic)
     {
         try
         {
-            for (Map.Entry<Integer, PageStatistic.RevisionWeekStatistic> entry : pageStatistic.revisionStatistics.entrySet())
+            for (Map.Entry<Integer, PageWeeklyStatistic.RevisionWeekStatistic> entry : pageStatistic.revisionStatistics.entrySet())
             {
 
 
@@ -95,7 +95,7 @@ public class WikiStatisticsMySqlWriter extends WikiStatisticsWriter
                 updateRunningAverage(pageStatistic, entry);
                 s.setDouble(5, runningAverages.get(pageStatistic.pageId));
                 int index = 6;
-                for (Map.Entry<PageStatistic.EditUniquenessCaclulationStrategy, Integer> uniqueTotal : entry.getValue().uniqueTotals.entrySet())
+                for (Map.Entry<PageWeeklyStatistic.EditUniquenessCaclulationStrategy, Integer> uniqueTotal : entry.getValue().uniqueTotals.entrySet())
                     s.setInt(index++, uniqueTotal.getValue());
 
                 s.executeUpdate();

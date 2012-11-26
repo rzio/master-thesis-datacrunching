@@ -1,5 +1,7 @@
-package il.ac.mta.wiki;
+package il.ac.mta.wiki.weekly;
 
+import il.ac.mta.wiki.weekly.WikiWeeklyStatisticsWriter;
+import il.ac.mta.wiki.weekly.WikiWeeklyStatisticsWriter;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -14,14 +16,14 @@ import java.util.Map;
  * @since 8/4/12 2:04 PM
  */
 
-public class WikiStatisticsCsvWriter extends WikiStatisticsWriter
+public class WikiWeeklyStatisticsCsvWriter extends WikiWeeklyStatisticsWriter
 {
 
     private final PrintWriter out;
     private static DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
 
 
-    public WikiStatisticsCsvWriter() throws IOException
+    public WikiWeeklyStatisticsCsvWriter() throws IOException
     {
         FileWriter fw = new FileWriter("out.csv", false);
         out = new PrintWriter(fw);
@@ -29,18 +31,18 @@ public class WikiStatisticsCsvWriter extends WikiStatisticsWriter
     }
 
     @Override
-    public void writeHeader(List<PageStatistic.EditUniquenessCaclulationStrategy> ucss)
+    public void writeHeader(List<PageWeeklyStatistic.EditUniquenessCaclulationStrategy> ucss)
     {
         out.print("pageId\tpageTitle\tweek\ttotalEdits\trunningAvg");
-        for (PageStatistic.EditUniquenessCaclulationStrategy strategy :ucss)
+        for (PageWeeklyStatistic.EditUniquenessCaclulationStrategy strategy :ucss)
             out.format("\t%s", strategy.toString());
         out.print("\n");
     }
 
     @Override
-    public void writeLine(PageStatistic pageStatistic)
+    public void writeLine(PageWeeklyStatistic pageStatistic)
     {
-        for (Map.Entry<Integer, PageStatistic.RevisionWeekStatistic> entry : pageStatistic.revisionStatistics.entrySet())
+        for (Map.Entry<Integer, PageWeeklyStatistic.RevisionWeekStatistic> entry : pageStatistic.revisionStatistics.entrySet())
         {
 
 
@@ -49,7 +51,7 @@ public class WikiStatisticsCsvWriter extends WikiStatisticsWriter
             updateRunningAverage(pageStatistic, entry);
             out.format("\t%s", runningAverages.get(pageStatistic.pageId));
 
-            for (Map.Entry<PageStatistic.EditUniquenessCaclulationStrategy, Integer> uniqueTotal : entry.getValue().uniqueTotals.entrySet())
+            for (Map.Entry<PageWeeklyStatistic.EditUniquenessCaclulationStrategy, Integer> uniqueTotal : entry.getValue().uniqueTotals.entrySet())
                 out.format("\t%s", uniqueTotal.getValue());
             out.print("\n");
         }
